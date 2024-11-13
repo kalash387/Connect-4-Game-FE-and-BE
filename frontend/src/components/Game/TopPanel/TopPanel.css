@@ -1,0 +1,28 @@
+.top-panel {
+    padding: 10px 20px;
+    background: #1e1e1e; /* Dark gray background for the top panel */
+    color: #f0f0f0; /* Light text color for contrast */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Softer shadow */
+}
+
+.top-panel .score {
+    font-size: 24px;
+}
+
+.top-panel .profile {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+}
+
+.top-panel .profile .MuiIconButton-root {
+    color: #f0f0f0;
+}
+
+.top-panel .profile .MuiTypography-root {
+    margin-left: 8px;
+    color: #f0f0f0;
+}

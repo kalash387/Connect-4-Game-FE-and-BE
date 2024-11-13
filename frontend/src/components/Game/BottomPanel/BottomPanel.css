@@ -1,0 +1,11 @@
+.bottom-panel {
+    padding: 10px 20px;
+    background: #1e1e1e; /* Dark gray background for the bottom panel */
+    color: #f0f0f0; /* Light text color for contrast */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.5); /* Softer shadow */
+    border-top: 1px solid #333;
+    font-size: 18px;
+}
