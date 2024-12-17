@@ -1,0 +1,99 @@
+.instructions-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.instructions-modal {
+    background: linear-gradient(135deg, #1E1E30, #2A2A4E);
+    padding: 30px;
+    border-radius: 20px;
+    border: 2px solid rgba(74, 158, 255, 0.3);
+    box-shadow: 
+        0 0 40px rgba(74, 158, 255, 0.2),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+    max-width: 500px;
+    width: 90%;
+    animation: modalSlideIn 0.4s ease-out;
+}
+
+.instructions-title {
+    font-size: 1.8rem;
+    margin: 0 0 25px;
+    background: linear-gradient(135deg, #4a9eff, #6b5eff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.instruction-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(74, 158, 255, 0.2);
+}
+
+.step-number {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    color: #4a9eff;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(74, 158, 255, 0.5);
+}
+
+.instruction-step p {
+    margin: 0;
+    color: #fff;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.close-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 25px;
+    background: linear-gradient(135deg, #4a9eff, #2a7fff);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74, 158, 255, 0.3);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+} 

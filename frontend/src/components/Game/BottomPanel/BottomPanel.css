@@ -1,11 +1,109 @@
 .bottom-panel {
-    padding: 10px 20px;
-    background: #1e1e1e; /* Dark gray background for the bottom panel */
-    color: #f0f0f0; /* Light text color for contrast */
+    padding: 15px 30px;
+    background: linear-gradient(180deg, rgba(25, 25, 35, 0.95) 0%, rgba(30, 30, 45, 0.9) 100%);
+    backdrop-filter: blur(10px);
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.5); /* Softer shadow */
-    border-top: 1px solid #333;
-    font-size: 18px;
+    border-top: 2px solid rgba(74, 158, 255, 0.3);
+    position: relative;
+    z-index: 2;
+}
+
+/* Add subtle glow effect to the top border */
+.bottom-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent,
+        rgba(74, 158, 255, 0.5),
+        rgba(107, 94, 255, 0.5),
+        transparent
+    );
+    filter: blur(1px);
+}
+
+.timer-container {
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(15, 15, 31, 0.9));
+    padding: 15px 30px;
+    border-radius: 15px;
+    border: 2px solid rgba(74, 158, 255, 0.3);
+    box-shadow: 
+        0 0 20px rgba(74, 158, 255, 0.2),
+        inset 0 0 30px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Add subtle animated gradient overlay */
+.timer-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(74, 158, 255, 0.03),
+        transparent
+    );
+    animation: shimmer 3s linear infinite;
+}
+
+.timer-container.low-time {
+    animation: pulseBorder 1s infinite;
+    border-color: #ff4757;
+    box-shadow: 
+        0 0 20px rgba(255, 71, 87, 0.2),
+        inset 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.timer-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #4a9eff;
+    text-shadow: 
+        0 0 10px rgba(74, 158, 255, 0.5),
+        0 0 20px rgba(74, 158, 255, 0.3);
+    font-family: 'Orbitron', sans-serif;
+    position: relative;
+}
+
+.timer-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    letter-spacing: 2px;
+    margin-top: 5px;
+    text-transform: uppercase;
+}
+
+@keyframes pulseBorder {
+    0% { 
+        border-color: rgba(255, 71, 87, 0.3);
+        box-shadow: 0 0 20px rgba(255, 71, 87, 0.1);
+    }
+    50% { 
+        border-color: rgba(255, 71, 87, 1);
+        box-shadow: 0 0 30px rgba(255, 71, 87, 0.3);
+    }
+    100% { 
+        border-color: rgba(255, 71, 87, 0.3);
+        box-shadow: 0 0 20px rgba(255, 71, 87, 0.1);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        transform: rotate(0deg) translate(-50%, -50%);
+    }
+    100% {
+        transform: rotate(360deg) translate(-50%, -50%);
+    }
 }

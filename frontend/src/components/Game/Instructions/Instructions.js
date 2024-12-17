@@ -1,43 +1,40 @@
 import React from 'react';
-import { Card, CardContent, Typography, Button, CardActions } from '@mui/material';
-import { styled } from '@mui/system';
+import './Instructions.css';
 
-const InstructionCard = styled(Card)(({ theme }) => ({
-  backgroundColor: '#2e2e2e',
-  color: 'white',
-  maxWidth: 400,
-  margin: 'auto',
-  borderRadius: 10,
-  boxShadow: '0 4px 20px rgba(0, 0, 0, 0.7)',
-}));
+const Instructions = ({ onClose }) => {
+    return (
+        <div className="instructions-overlay" onClick={onClose}>
+            <div className="instructions-modal" onClick={e => e.stopPropagation()}>
+                <div className="instructions-content">
+                    <h2 className="instructions-title">How to Play Connect 4</h2>
+                    
+                    <div className="instruction-step">
+                        <div className="step-number">01</div>
+                        <p>The game is played on a grid that's 7 columns by 6 rows.</p>
+                    </div>
 
-const InstructionsCard = ({ onClose }) => {
-  return (
-    <InstructionCard>
-      <CardContent>
-        <Typography variant="h5" gutterBottom>
-          How to Play Connect 4
-        </Typography>
-        <Typography variant="body1" paragraph>
-          1. The game is played on a grid that's 7 columns by 6 rows.
-        </Typography>
-        <Typography variant="body1" paragraph>
-          2. Players take turns dropping one of their discs from the top into any of the columns.
-        </Typography>
-        <Typography variant="body1" paragraph>
-          3. The first player to get four of their discs in a row (vertically, horizontally, or diagonally) wins.
-        </Typography>
-        <Typography variant="body1" paragraph>
-          4. If the board fills up before either player achieves four in a row, the game is a draw.
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small" color="primary" onClick={onClose}>
-          Close
-        </Button>
-      </CardActions>
-    </InstructionCard>
-  );
+                    <div className="instruction-step">
+                        <div className="step-number">02</div>
+                        <p>Players take turns dropping their colored discs from the top into any column.</p>
+                    </div>
+
+                    <div className="instruction-step">
+                        <div className="step-number">03</div>
+                        <p>The first player to connect 4 discs in a row (vertically, horizontally, or diagonally) wins!</p>
+                    </div>
+
+                    <div className="instruction-step">
+                        <div className="step-number">04</div>
+                        <p>If all spaces are filled with no winner, the game is a draw.</p>
+                    </div>
+
+                    <button className="close-button" onClick={onClose}>
+                        Got it!
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
 };
 
-export default InstructionsCard;
+export default Instructions;

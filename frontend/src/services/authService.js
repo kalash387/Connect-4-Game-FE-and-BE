@@ -1,7 +1,8 @@
 // services/authService.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/auth';
+const API_URL = 'https://connect-4-backend-3uji.onrender.com/api/auth';
+const API_LOCAL_URL = 'http://localhost:5000/api/auth';
 
 export const login = async (username, password) => {
     try {
