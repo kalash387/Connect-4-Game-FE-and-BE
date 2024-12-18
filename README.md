@@ -1,6 +1,6 @@
 # Connect 4 Game 🎮
 
-A modern, interactive implementation of the classic Connect 4 game built with React and Node.js. Features include user authentication, multiple AI difficulty levels, and a sleek cyberpunk-inspired design.
+A modern, interactive implementation of the classic Connect 4 game built with React and Node.js. Features include user authentication, multiple difficulty levels, and a sleek cyberpunk-inspired design.
 
 [View Live Demo](https://connect-4-game-by-kalash.vercel.app/) | [Report Bug](https://github.com/kalash387/Connect-4-Game-FE-and-BE/issues) | [Request Feature](https://github.com/kalash387/Connect-4-Game-FE-and-BE/issues)
 
@@ -13,7 +13,7 @@ Experience the sleek, cyberpunk-inspired interface of our Connect 4 game:
 ## ✨ Features
 
 - **🎯 Multiple Game Modes**
-  - Three AI difficulty levels (Easy, Medium, Hard)
+  - Three difficulty levels (Easy, Medium, Hard)
   - 60-second timer per turn
   - Winning animations with confetti effects
   - Interactive game board with hover effects
@@ -86,11 +86,11 @@ Experience the game: [Connect 4 Game](https://connect-4-game-by-kalash.vercel.ap
 3. Each turn has a 60-second time limit
 4. Game ends in a draw if the board fills up with no winner
 
-## 🤖 AI Difficulty Levels
+## 🤖 Bot Difficulty Levels
 
-- **Easy**: AI makes random moves
-- **Medium**: AI can block player's winning moves
-- **Hard**: AI strategically plans moves and blocks player's attempts
+- **Easy**: Bot makes random moves
+- **Medium**: Bot can block player's winning moves
+- **Hard**: Bot strategically plans moves and blocks player's attempts
 
 ## 🔐 Security Features
 
@@ -108,30 +108,6 @@ Experience the game: [Connect 4 Game](https://connect-4-game-by-kalash.vercel.ap
 | Background | ![#1E1E30](https://via.placeholder.com/10/1E1E30?text=+) #1E1E30 |
 | Text Color | ![#FFFFFF](https://via.placeholder.com/10/FFFFFF?text=+) #FFFFFF |
 
-## 🛣️ Roadmap
-
-- [x] Basic game functionality
-- [x] User authentication
-- [x] AI opponent
-- [x] Responsive design
-- [ ] Multiplayer support
-- [ ] Game statistics
-- [ ] User profiles
-- [ ] Leaderboard
-
-## 🤝 Contributing
-
-Contributions make the open-source community an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 📧 Contact
 
