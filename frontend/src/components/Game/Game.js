@@ -138,17 +138,16 @@ const Game = () => {
 
 	const botMove = () => {
 		if (gameOver) return;
-
+	
 		const emptyCols = board[0].map((col, colIndex) => col === 0 ? colIndex : -1).filter(colIndex => colIndex !== -1);
-
+	
 		if (difficulty === 'easy') {
 			// Easy: Bot plays random moves
 			const randomCol = emptyCols[Math.floor(Math.random() * emptyCols.length)];
-			
 			handleColumnClick(randomCol);
 		} 
 		else if (difficulty === 'medium') {
-			// Medium: Bot tries to block player's winning move but doesn't focus on winning
+			// Medium: Bot tries to block player’s winning move but doesn't focus on winning
 			const opponentWinMove = findWinningMove(1);
 			if (opponentWinMove !== null) {
 				handleColumnClick(opponentWinMove);
@@ -158,48 +157,17 @@ const Game = () => {
 			}
 		} 
 		else if (difficulty === 'hard') {
-			// Hard: Implement perfect strategy
-			let moveCol;
-
-			// 1. Check for immediate win
-			moveCol = findWinningMove(2);
-			if (moveCol !== null) {
-				handleColumnClick(moveCol);
-				return;
-			}
-
-			// 2. Block opponent's immediate win
-			moveCol = findWinningMove(1);
-			if (moveCol !== null) {
-				handleColumnClick(moveCol);
-				return;
-			}
-
-			// 3. Check for trap moves (moves that create two winning opportunities)
-			moveCol = findTrapMove(2);
-			if (moveCol !== null) {
-				handleColumnClick(moveCol);
-				return;
-			}
-
-			// 4. Block opponent's trap moves
-			moveCol = findTrapMove(1);
-			if (moveCol !== null) {
-				handleColumnClick(moveCol);
-				return;
-			}
-
-			// 5. Prefer center column
-			if (emptyCols.includes(3)) {
-				handleColumnClick(3);
-				return;
-			}
-
-			// 6. Choose strategic position
-			for (const col of [2, 4, 1, 5, 0, 6]) {
-				if (emptyCols.includes(col)) {
-					handleColumnClick(col);
-					return;
+			// Hard: Bot checks for its own win first, then tries to block the opponent, otherwise random
+			const botWinningMove = findWinningMove(2);
+			if (botWinningMove !== null) {
+				handleColumnClick(botWinningMove);
+			} else {
+				const opponentWinMove = findWinningMove(1);
+				if (opponentWinMove !== null) {
+					handleColumnClick(opponentWinMove);
+				} else {
+					const randomCol = emptyCols[Math.floor(Math.random() * emptyCols.length)];
+					handleColumnClick(randomCol);
 				}
 			}
 		}
@@ -302,36 +270,6 @@ const Game = () => {
 		}
 
 		return false;
-	};
-
-	const findTrapMove = (player) => {
-		for (let colIndex = 0; colIndex < 7; colIndex++) {
-			const rowIndex = getFirstEmptyRow(colIndex);
-			if (rowIndex !== -1) {
-				// Try this move
-				const tempBoard = board.map(row => row.slice());
-				tempBoard[rowIndex][colIndex] = player;
-				
-				// Count winning possibilities after this move
-				let winningMoves = 0;
-				for (let col = 0; col < 7; col++) {
-					const nextRow = getFirstEmptyRow(col);
-					if (nextRow !== -1) {
-						const futureBoard = tempBoard.map(row => row.slice());
-						futureBoard[nextRow][col] = player;
-						if (checkWin(futureBoard, player)) {
-							winningMoves++;
-						}
-					}
-				}
-				
-				// If this creates multiple winning moves, it's a trap move
-				if (winningMoves >= 2) {
-					return colIndex;
-				}
-			}
-		}
-		return null;
 	};
 
 	useEffect(() => {
