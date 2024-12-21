@@ -20,7 +20,7 @@ const Game = () => {
 	const [showInstructions, setShowInstructions] = useState(false);
 	const [winningCells, setWinningCells] = useState([]);
 	const [isShowingWinner, setIsShowingWinner] = useState(false);
-  const navigate = useNavigate();
+	const navigate = useNavigate();
 
 
 	useEffect(() => {
@@ -60,7 +60,7 @@ const Game = () => {
 			return Math.random() * (max - min) + min;
 		}
 
-		const interval = setInterval(function() {
+		const interval = setInterval(function () {
 			const timeLeft = animationEnd - Date.now();
 
 			if (timeLeft <= 0) {
@@ -68,14 +68,14 @@ const Game = () => {
 			}
 
 			const particleCount = 50 * (timeLeft / duration);
-			
+
 			// Left side confetti
 			confetti({
 				...defaults,
 				particleCount,
 				origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
 			});
-			
+
 			// Right side confetti
 			confetti({
 				...defaults,
@@ -108,16 +108,16 @@ const Game = () => {
 					setGameOver(true);
 					setWinner(currentPlayer);
 					setIsShowingWinner(true);
-					
+
 					// Trigger celebration animation
 					triggerWinAnimation();
-					
+
 					// Sequence for showing winner
 					setTimeout(() => {
 						setIsShowingWinner(false);
 						setDialogOpen(true);
 					}, 2500);
-					
+
 					setGameStarted(false);
 				} else {
 					setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
@@ -138,14 +138,14 @@ const Game = () => {
 
 	const botMove = () => {
 		if (gameOver) return;
-	
+
 		const emptyCols = board[0].map((col, colIndex) => col === 0 ? colIndex : -1).filter(colIndex => colIndex !== -1);
-	
+
 		if (difficulty === 'easy') {
 			// Easy: Bot plays random moves
 			const randomCol = emptyCols[Math.floor(Math.random() * emptyCols.length)];
 			handleColumnClick(randomCol);
-		} 
+		}
 		else if (difficulty === 'medium') {
 			// Medium: Bot tries to block player’s winning move but doesn't focus on winning
 			const opponentWinMove = findWinningMove(1);
@@ -155,7 +155,7 @@ const Game = () => {
 				const randomCol = emptyCols[Math.floor(Math.random() * emptyCols.length)];
 				handleColumnClick(randomCol);
 			}
-		} 
+		}
 		else if (difficulty === 'hard') {
 			// Hard: Bot checks for its own win first, then tries to block the opponent, otherwise random
 			const botWinningMove = findWinningMove(2);
@@ -345,12 +345,12 @@ const Game = () => {
 				onSelectDifficulty={setDifficulty}
 				onShowInstructions={() => setShowInstructions(true)}
 			/>
-			
+
 			<div className="game-content">
 				<div className="board-container">
-					<Typography variant="h1" className="game-title">
-						Connect 4
-					</Typography>
+					<div variant="h1" className="game-title">
+						Connect <span className="title-highlight">4</span>
+					</div>
 
 					<div className="game-board">
 						{board.map((row, rowIndex) => (
@@ -376,31 +376,31 @@ const Game = () => {
 						))}
 					</div>
 
-          <div className="game-status">
-    <div className="status-container">
-        <div className="status-label">CURRENT TURN</div>
-        <div className={`player-indicator ${currentPlayer === 1 ? 'player1' : 'player2'}`}>
-            <div className="player-avatar">
-                {currentPlayer === 1 ? '👤' : '🤖'}
-            </div>
-            <div className="player-name">
-                {currentPlayer === 1 ? 'YOUR TURN' : 'COMPUTER THINKING...'}
-            </div>
-        </div>
-    </div>
-</div>
+					<div className="game-status">
+						<div className="status-container">
+							<div className="status-label">CURRENT TURN</div>
+							<div className={`player-indicator ${currentPlayer === 1 ? 'player1' : 'player2'}`}>
+								<div className="player-avatar">
+									{currentPlayer === 1 ? '👤' : '🤖'}
+								</div>
+								<div className="player-name">
+									{currentPlayer === 1 ? 'YOUR TURN' : 'COMPUTER THINKING...'}
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 
-			<BottomPanel 
+			<BottomPanel
 				onTimerExpiry={handleTimerExpiry}
 				gameOver={gameOver}
 				gameStarted={gameStarted}
 				currentPlayer={currentPlayer}
 			/>
 
-			<Dialog 
-				open={dialogOpen} 
+			<Dialog
+				open={dialogOpen}
 				onClose={() => setDialogOpen(false)}
 				PaperProps={{
 					style: {
@@ -408,45 +408,62 @@ const Game = () => {
 						border: '2px solid rgba(74, 158, 255, 0.3)',
 						borderRadius: '20px',
 						color: 'white',
-						padding: '20px'
+						padding: '20px',
+						fontFamily: "'Audiowide', 'Orbitron', 'Rajdhani', 'Play', sans-serif"
 					}
 				}}
 			>
-				<DialogTitle sx={{ 
-					textAlign: 'center',
-					fontSize: '2rem',
-					background: 'linear-gradient(135deg, #4a9eff, #6b5eff)',
-					WebkitBackgroundClip: 'text',
-					WebkitTextFillColor: 'transparent'
-				}}>
-					{ winner ? '🎮 Game Over! 🎮' : '⏰ Time\'s Up! ⏰'}
-				</DialogTitle>
+				<DialogTitle
+					sx={{
+						textAlign: 'center',
+						fontSize: '2rem',
+						background: 'linear-gradient(135deg, #4a9eff, #6b5eff)',
+						WebkitBackgroundClip: 'text',
+						WebkitTextFillColor: 'transparent',
+						fontFamily: 'inherit'
+					}}
+				>
+					{winner ? (
+						<><span className="emoji">🎮</span> Game Over! <span className="emoji">🎮</span></>
+					) : (
+						<><span className="emoji">⏰</span> Time's Up! <span className="emoji">⏰</span></>
+					)}
+					
+									</DialogTitle>
 				<DialogContent sx={{ textAlign: 'center', py: 3 }}>
 					{winner ? (
-						<Typography variant="h6">
-							{winner === 1 ? 
-								'🎉 Congratulations! You Won! 🏆' : 
-								'🤖 The Computer Wins! Better luck next time! 🎯'}
+						<Typography
+							variant="h6"
+							sx={{ fontFamily: 'inherit' }}
+						>
+							{winner === 1 ?
+								'🎉 Congratulations! You Won! 🏆' :
+								'🤖 Computer Wins! Better luck next time! 🎯'}
 						</Typography>
 					) : (
-						<Typography variant="h6">
+						<Typography
+							variant="h6"
+							sx={{ fontFamily: 'inherit' }}
+						>
 							⌛ Time's up! It's a draw! 🤝
 						</Typography>
 					)}
 				</DialogContent>
 				<DialogActions sx={{ justifyContent: 'center', gap: 2, pb: 3 }}>
-					<Button 
-						variant="contained" 
+					<Button
+						variant="contained"
 						onClick={handleRestart}
 						className="restart-button"
+						sx={{ fontFamily: 'inherit' }}
 					>
 						🎮 Play Again
 					</Button>
-					<Button 
-						variant="contained" 
+					<Button
+						variant="contained"
 						onClick={handleLogout}
 						className="exit-button"
-						>
+						sx={{ fontFamily: 'inherit' }}
+					>
 						🚪 Exit Game
 					</Button>
 				</DialogActions>

@@ -1,3 +1,17 @@
+
+/* First, add these imports at the very top of your CSS file */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Play:wght@400;700&display=swap');
+
+
+@font-face {
+    font-family: 'Cyberpunk';
+    src: url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600&display=swap');
+}
+
+
 /* Base styles */
 html, body, #root {
     margin: 0;
@@ -73,33 +87,73 @@ html, body, #root {
     opacity: 0.5;
 }
 
+/* ... (previous styles remain unchanged) */
 .game-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 3px;
+    font-family: 'Orbitron', sans-serif; /* Include Orbitron first */
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 15px;
     background: linear-gradient(135deg, #4a9eff 30%, #6b5eff 70%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 4px;
     text-align: center;
     position: relative;
-    padding: 5px 0;
+    padding: 10px 0;
+    text-shadow: 0 0 10px rgba(74, 158, 255, 0.5);
 }
 
+.title-highlight {
+    font-family: 'Audiowide', 'Orbitron', 'Rajdhani', 'Play', sans-serif; /* Apply the same font to the 4 */
+    font-weight: 800; /* Ensure the 4 has the same weight */
+    font-size: 3.5rem; /* Match font size for "4" */
+    text-transform: uppercase; /* Ensure the case is uniform */
+    letter-spacing: 4px;
+}
+.game-title::before,
 .game-title::after {
     content: '';
     position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     bottom: 0;
-    left: 25%;
-    right: 25%;
-    height: 1px;
-    background: linear-gradient(90deg, 
-        transparent,
-        rgba(74, 158, 255, 0.5),
-        transparent
+    background: linear-gradient(45deg, 
+        transparent 0%,
+        rgba(74, 158, 255, 0.1) 50%,
+        transparent 100%
     );
+    z-index: -1;
+    transition: all 0.3s ease;
 }
+
+.game-title::after {
+    filter: blur(5px);
+    opacity: 0.5;
+}
+
+.game-title:hover::before,
+.game-title:hover::after {
+    transform: scale(1.05);
+    opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 2rem;
+        letter-spacing: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-title {
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+    }
+}
+
+
 
 .game-board {
     position: relative;
@@ -344,6 +398,13 @@ html {
     font-size: 0.7rem;
 }
 
+.emoji {
+    background: none;
+    -webkit-background-clip: initial;
+    -webkit-text-fill-color: initial;
+    display: inline-block;
+}
+
 /* Adjust game over modal for mobile */
 @media (max-width: 768px) {
     .game-over-modal {
@@ -423,6 +484,7 @@ html {
 }
 
 .restart-button {
+    font-family: 'Orbitron', sans-serif; /* Include Orbitron first */
     background: linear-gradient(135deg, #4a9eff, #2a7fff) !important;
     color: white !important;
     padding: 12px 30px !important;

@@ -1,16 +1,17 @@
+/* General Styling */
 .bottom-panel {
     padding: 15px 30px;
     background: linear-gradient(180deg, rgba(25, 25, 35, 0.95) 0%, rgba(30, 30, 45, 0.9) 100%);
     backdrop-filter: blur(10px);
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
     border-top: 2px solid rgba(74, 158, 255, 0.3);
     position: relative;
     z-index: 2;
 }
 
-/* Add subtle glow effect to the top border */
+/* Glowing Top Border */
 .bottom-panel::before {
     content: '';
     position: absolute;
@@ -18,29 +19,22 @@
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, 
-        transparent,
-        rgba(74, 158, 255, 0.5),
-        rgba(107, 94, 255, 0.5),
-        transparent
-    );
+    background: linear-gradient(90deg, transparent, rgba(74, 158, 255, 0.5), rgba(107, 94, 255, 0.5), transparent);
     filter: blur(1px);
 }
 
+/* Timer Container */
 .timer-container {
     background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(15, 15, 31, 0.9));
     padding: 15px 30px;
     border-radius: 15px;
     border: 2px solid rgba(74, 158, 255, 0.3);
-    box-shadow: 
-        0 0 20px rgba(74, 158, 255, 0.2),
-        inset 0 0 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 20px rgba(74, 158, 255, 0.2), inset 0 0 30px rgba(0, 0, 0, 0.3);
     text-align: center;
     position: relative;
     overflow: hidden;
 }
 
-/* Add subtle animated gradient overlay */
 .timer-container::before {
     content: '';
     position: absolute;
@@ -48,32 +42,23 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(
-        45deg,
-        transparent,
-        rgba(74, 158, 255, 0.03),
-        transparent
-    );
+    background: linear-gradient(45deg, transparent, rgba(74, 158, 255, 0.03), transparent);
     animation: shimmer 3s linear infinite;
 }
 
+/* Low Time Animation */
 .timer-container.low-time {
     animation: pulseBorder 1s infinite;
     border-color: #ff4757;
-    box-shadow: 
-        0 0 20px rgba(255, 71, 87, 0.2),
-        inset 0 0 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 20px rgba(255, 71, 87, 0.2), inset 0 0 30px rgba(0, 0, 0, 0.3);
 }
 
 .timer-value {
     font-size: 2.5rem;
     font-weight: bold;
     color: #4a9eff;
-    text-shadow: 
-        0 0 10px rgba(74, 158, 255, 0.5),
-        0 0 20px rgba(74, 158, 255, 0.3);
+    text-shadow: 0 0 10px rgba(74, 158, 255, 0.5), 0 0 20px rgba(74, 158, 255, 0.3);
     font-family: 'Orbitron', sans-serif;
-    position: relative;
 }
 
 .timer-label {
@@ -84,26 +69,109 @@
     text-transform: uppercase;
 }
 
-@keyframes pulseBorder {
-    0% { 
-        border-color: rgba(255, 71, 87, 0.3);
-        box-shadow: 0 0 20px rgba(255, 71, 87, 0.1);
+/* Footer Mention */
+.footer-mention {
+    color: #ffffff;
+    font-size: 1rem;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    padding: 8px 15px;
+    border-radius: 20px;
+    background: rgba(74, 158, 255, 0.1);
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.footer-mention:hover {
+    background: rgba(74, 158, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.made-by {
+    display: flex;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 0.5px;
+    animation: glow 1.5s ease-in-out infinite alternate;
+}
+
+.creator-name {
+    margin-left: 8px;
+    font-weight: 500;
+}
+
+.creator-name a {
+    background: linear-gradient(90deg, #4a9eff, #83c9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: rgba(74, 158, 255, 0.5);
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.creator-name a:hover {
+    text-shadow: 0 0 8px rgba(74, 158, 255, 0.5);
+}
+
+.creator-name a::after {
+    content: '🔗';
+    position: absolute;
+    top: -5px;
+    right: -15px;
+    font-size: 0.8em;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.creator-name a:hover::after {
+    opacity: 1;
+}
+
+.creator-name .emoji {
+    font-size: 1.2em;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 2px;
+}
+
+.fas.fa-heart {
+    color: #ff6b95;
+    filter: drop-shadow(0 0 2px rgba(255, 107, 149, 0.5));
+}
+
+/* Animations */
+@keyframes shimmer {
+    0% {
+        transform: translateX(0);
     }
-    50% { 
-        border-color: rgba(255, 71, 87, 1);
-        box-shadow: 0 0 30px rgba(255, 71, 87, 0.3);
-    }
-    100% { 
-        border-color: rgba(255, 71, 87, 0.3);
-        box-shadow: 0 0 20px rgba(255, 71, 87, 0.1);
+    100% {
+        transform: translateX(100%);
     }
 }
 
-@keyframes shimmer {
+@keyframes pulseBorder {
     0% {
-        transform: rotate(0deg) translate(-50%, -50%);
+        box-shadow: 0 0 20px rgba(255, 71, 87, 0.3);
     }
     100% {
-        transform: rotate(360deg) translate(-50%, -50%);
+        box-shadow: 0 0 40px rgba(255, 71, 87, 0.5);
     }
 }
+
+@keyframes glow {
+    0% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+/* Import Font Awesome */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
