@@ -366,29 +366,30 @@ const Game = () => {
 	}, []);
 
 	const saveGameData = async () => {
-		const gameData = {
-			gameStatus: winner === 1 ? 'win' : winner === 2 ? 'loss' : 'draw',
-			score: {
-				player: playerScore,
-				bot: botScore
-			},
-			difficulty,
-			moves: moveCount,
-			duration: 60 - timer,
-			playedAt: new Date()
-		};
-
 		try {
 			const token = localStorage.getItem('token');
 			if (!token) {
-				console.error('No authentication token found');
+				console.log('No token found');
 				return;
 			}
 
-			await axios.post('https://connect-4-backend-3uji.onrender.com/api/auth/update-game', 
+			const gameData = {
+				gameStatus: gameOver ? (winner ? 'won' : 'draw') : 'in_progress',
+				score: playerScore,
+				difficulty: difficulty,
+				moves: moveCount,
+				duration: 60 - timer,
+				playedAt: new Date().toISOString()
+			};
+			const API_URL = 'https://connect-4-backend-3uji.onrender.com/api/auth';
+
+			await axios.post(`${API_URL}/update-game`, 
 				gameData,
 				{
-					headers: { Authorization: `Bearer ${token}` }
+					headers: { 
+						'Authorization': `Bearer ${token}`,
+						'Content-Type': 'application/json'
+					}
 				}
 			);
 		} catch (error) {

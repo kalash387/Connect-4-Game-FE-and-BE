@@ -21,12 +21,21 @@ const TopPanel = ({
 
     const fetchLastGame = async () => {
         try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.log('No token found');
+                return;
+            }
+
             const response = await axios.get(`${API_URL}/last-game`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
             });
             setLastGame(response.data.lastGame);
         } catch (error) {
-            console.log('No game history available');
+            console.log('Error fetching last game:', error);
             setLastGame(null);
         }
     };
