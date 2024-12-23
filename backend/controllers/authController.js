@@ -57,7 +57,7 @@ const loginUser = async (req, res) => {
         // Generate token
         const token = jwt.sign(
             { id: user._id },
-            process.env.JWT_SECRET || 'your-secret-key',
+            process.env.JWT_SECRET || 'test123',
             { expiresIn: '30d' }
         );
 
@@ -72,6 +72,7 @@ const loginUser = async (req, res) => {
     }
 };
 
+// Make sure to export both functions
 module.exports = {
     registerUser,
     loginUser
