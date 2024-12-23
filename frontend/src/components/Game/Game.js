@@ -5,9 +5,11 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import confetti from 'canvas-confetti'; // First, run: npm install canvas-confetti
 import axios from 'axios';
 
-import { Typography, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { Typography, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button, Chip } from '@mui/material';
 import './Game.css';
 import Instructions from './Instructions/Instructions';
+import { getGameAnalytics } from '../../services/analyticsService';
+import AnalyticsDialog from './AnalyticsDialog/AnalyticsDialog';
 
 const Game = () => {
 	const [board, setBoard] = useState(Array(6).fill().map(() => Array(7).fill(0)));
@@ -26,7 +28,10 @@ const Game = () => {
 	const [moveCount, setMoveCount] = useState(0);
 	const [timer, setTimer] = useState(60);
 	const navigate = useNavigate();
-
+	const [analytics, setAnalytics] = useState(null);
+	const [showAnalytics, setShowAnalytics] = useState(false);
+	const [gameStartTime, setGameStartTime] = useState(null);
+	const [showAnalyticsDialog, setShowAnalyticsDialog] = useState(false);
 
 	useEffect(() => {
 		// Create floating particles
@@ -50,9 +55,10 @@ const Game = () => {
 	}, []);
 
 	// Function to handle when timer expires
-	const handleTimerExpiry = () => {
+	const handleTimerExpiry = async () => {
 		setGameOver(true);
-		setDialogOpen(true)
+		await handleGameEnd(null); // null for timeout
+		setDialogOpen(true);
 	};
 
 	const triggerWinAnimation = () => {
@@ -127,7 +133,8 @@ const Game = () => {
 						setBotScore(prev => prev + 1);
 					}
 
-					await saveGameData();
+					await handleGameEnd(currentPlayer);
+
 					triggerWinAnimation();
 
 					setTimeout(() => {
@@ -138,13 +145,12 @@ const Game = () => {
 				} else if (checkDraw(newBoard)) {
 					setGameOver(true);
 					setWinner(null);
-					await saveGameData();
+					await handleGameEnd(null);
 					setDialogOpen(true);
 				} else {
 					setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
 				}
 				
-				// Increment move count when a valid move is made
 				setMoveCount(prev => prev + 1);
 				break;
 			}
@@ -314,8 +320,9 @@ const Game = () => {
 		setIsShowingWinner(false);
 		setWinningCells([]);
 		setMoveCount(0);
-		setGameStarted(false);  // Reset gameStarted to allow difficulty changes
-		setTimer(60);  // Reset timer
+		setGameStarted(false);
+		setTimer(60);
+		setGameStartTime(null);
 	};
 
 	const handleLogout = () => {
@@ -415,6 +422,30 @@ const Game = () => {
 		}
 	};
 
+	const handleGameEnd = async (winner) => {
+		const duration = gameStartTime ? Math.floor((Date.now() - gameStartTime) / 1000) : 0;
+		
+		const gameData = {
+			winner: winner === 1 ? 'player' : 'computer',
+			moves: moveCount,
+			duration: duration,
+			difficulty: difficulty
+		};
+
+		try {
+			const analyticsData = await getGameAnalytics(gameData);
+			setAnalytics(analyticsData);
+		} catch (error) {
+			console.error('Error getting game analytics:', error);
+		}
+	};
+
+	useEffect(() => {
+		if (gameStarted && !gameStartTime) {
+			setGameStartTime(Date.now());
+		}
+	}, [gameStarted]);
+
 	return (
 		<div className="game-container">
 			<TopPanel
@@ -510,50 +541,180 @@ const Game = () => {
 					) : (
 						<><span className="emoji">⏰</span> Time's Up! <span className="emoji">⏰</span></>
 					)}
-					
-									</DialogTitle>
+				</DialogTitle>
 				<DialogContent sx={{ textAlign: 'center', py: 3 }}>
-					{winner ? (
-						<Typography
-							variant="h6"
-							sx={{ fontFamily: 'inherit' }}
-						>
-							{winner === 1 ?
+					<Typography
+						variant="h6"
+						sx={{ fontFamily: 'inherit', marginBottom: 2 }}
+					>
+						{winner ? (
+							winner === 1 ?
 								'🎉 Congratulations! You Won! 🏆' :
-								'🤖 Computer Wins! Better luck next time! 🎯'}
-						</Typography>
-					) : (
-						<Typography
-							variant="h6"
-							sx={{ fontFamily: 'inherit' }}
-						>
-							⌛ Time's up! It's a draw! 🤝
-						</Typography>
-					)}
+								'🤖 Computer Wins! Better luck next time! 🎯'
+						) : (
+							'⌛ Time\'s up! It\'s a draw! 🤝'
+						)}
+					</Typography>
+					
+					<Button
+						variant="contained"
+						onClick={() => setShowAnalyticsDialog(true)}
+						sx={{
+							mt: 2,
+							mb: 2,
+							background: 'linear-gradient(135deg, #4a9eff, #2a7fff)',
+							color: 'white',
+							padding: '12px 30px',
+							borderRadius: '8px',
+							fontWeight: 'bold',
+							textTransform: 'uppercase',
+							letterSpacing: '1px',
+							fontFamily: "'Orbitron', sans-serif",
+							transition: 'all 0.3s ease',
+							border: '1px solid rgba(74, 158, 255, 0.3)',
+							boxShadow: '0 4px 15px rgba(74, 158, 255, 0.2)',
+							'&:hover': {
+								background: 'linear-gradient(135deg, #2a7fff, #4a9eff)',
+								transform: 'translateY(-2px)',
+								boxShadow: '0 6px 20px rgba(74, 158, 255, 0.3)',
+							}
+						}}
+					>
+						<span style={{ marginRight: '8px' }}>📊</span> View Game Analytics
+					</Button>
 				</DialogContent>
 				<DialogActions sx={{ justifyContent: 'center', gap: 2, pb: 3 }}>
 					<Button
-						variant="contained"
-						onClick={handleRestart}
-						className="restart-button"
-						sx={{ fontFamily: 'inherit' }}
+							variant="contained"
+							onClick={handleRestart}
+							className="restart-button"
+							sx={{ fontFamily: 'inherit' }}
 					>
 						🎮 Play Again
 					</Button>
 					<Button
-						variant="contained"
-						onClick={handleLogout}
-						className="exit-button"
-						sx={{ fontFamily: 'inherit' }}
+							variant="contained"
+							onClick={handleLogout}
+							className="exit-button"
+							sx={{ fontFamily: 'inherit' }}
 					>
 						🚪 Exit Game
 					</Button>
 				</DialogActions>
 			</Dialog>
 
+			{showAnalytics && (
+				<AnalyticsDialog 
+					analytics={analytics}
+					onClose={() => setShowAnalytics(false)}
+				/>
+			)}
+
 			{showInstructions && (
 				<Instructions onClose={() => setShowInstructions(false)} />
 			)}
+
+			<Dialog
+				open={showAnalyticsDialog}
+				onClose={() => setShowAnalyticsDialog(false)}
+				maxWidth="md"
+				PaperProps={{
+					style: {
+						background: 'linear-gradient(135deg, #1E1E30, #2A2A4E)',
+						border: '2px solid rgba(74, 158, 255, 0.3)',
+						borderRadius: '20px',
+						color: 'white',
+						padding: '20px',
+						minWidth: '500px',
+						fontFamily: "'Audiowide', 'Orbitron', 'Rajdhani', 'Play', sans-serif"
+					}
+				}}
+			>
+				<DialogTitle
+					sx={{
+						textAlign: 'center',
+						fontSize: '2rem',
+						background: 'linear-gradient(135deg, #4a9eff, #6b5eff)',
+						WebkitBackgroundClip: 'text',
+						WebkitTextFillColor: 'transparent',
+						fontFamily: 'inherit'
+					}}
+				>
+					Game Analytics
+				</DialogTitle>
+				<DialogContent sx={{ textAlign: 'center', py: 3 }}>
+					{analytics && (
+						<>
+							<div className="performance-section" style={{
+								marginBottom: '20px',
+								padding: '15px',
+								background: 'rgba(255, 255, 255, 0.05)',
+								borderRadius: '10px'
+							}}>
+								<Typography variant="h6" sx={{ color: '#4a9eff', marginBottom: '10px' }}>
+									Performance
+								</Typography>
+								<Typography sx={{ color: '#fff' }}>
+									{analytics.performance}
+								</Typography>
+							</div>
+
+							<div className="strengths-section" style={{ marginBottom: '20px' }}>
+								<Typography variant="h6" sx={{ color: '#4a9eff', marginBottom: '10px' }}>
+									Your Strengths
+								</Typography>
+								<div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
+									{analytics.strengths.map((strength, index) => (
+										<Chip
+											key={index}
+											label={strength}
+											sx={{
+												background: 'rgba(74, 158, 255, 0.2)',
+												color: '#fff',
+												border: '1px solid rgba(74, 158, 255, 0.3)'
+											}}
+										/>
+									))}
+								</div>
+							</div>
+
+							<div className="recommendation-section" style={{
+								padding: '15px',
+								background: 'rgba(255, 255, 255, 0.05)',
+								borderRadius: '10px'
+							}}>
+								<Typography variant="h6" sx={{ color: '#4a9eff', marginBottom: '10px' }}>
+									Recommendations
+								</Typography>
+								<Typography sx={{ color: '#fff', marginBottom: '10px' }}>
+									{analytics.recommendation}
+								</Typography>
+								<Typography variant="h6" sx={{ color: '#4a9eff', marginBottom: '10px', marginTop: '20px' }}>
+									Next Steps
+								</Typography>
+								<Typography sx={{ color: '#fff' }}>
+									{analytics.nextSteps}
+								</Typography>
+							</div>
+						</>
+					)}
+				</DialogContent>
+				<DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
+					<Button
+						onClick={() => setShowAnalyticsDialog(false)}
+						variant="contained"
+						sx={{
+							background: 'linear-gradient(135deg, #4a9eff, #2a7fff)',
+							fontFamily: 'inherit',
+							'&:hover': {
+								background: 'linear-gradient(135deg, #2a7fff, #4a9eff)',
+							}
+						}}
+					>
+						Close Analytics
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</div>
 	);
 };

@@ -1,0 +1,96 @@
+.analytics-section {
+    margin-bottom: 25px;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(74, 158, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.analytics-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74, 158, 255, 0.1);
+    border-color: rgba(74, 158, 255, 0.4);
+}
+
+.section-title {
+    color: #4a9eff !important;
+    margin-bottom: 15px !important;
+    font-family: 'Audiowide', sans-serif !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 1.5rem !important;
+    font-weight: normal !important;
+}
+
+.performance-text,
+.recommendation-text,
+.next-steps-text {
+    color: #fff !important;
+    line-height: 1.6 !important;
+    font-family: 'Rajdhani', sans-serif !important;
+    font-size: 1.1rem !important;
+    margin: 10px 0 !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.strengths-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.strength-chip {
+    background: rgba(74, 158, 255, 0.15) !important;
+    color: #fff !important;
+    border: 1px solid rgba(74, 158, 255, 0.3) !important;
+    padding: 12px 20px !important;
+    font-family: 'Rajdhani', sans-serif !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 1px !important;
+}
+
+.strength-chip:hover {
+    background: rgba(74, 158, 255, 0.25) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 158, 255, 0.2);
+}
+
+/* Close Analytics button */
+.MuiButton-root {
+    font-family: 'Audiowide', sans-serif !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.analytics-section {
+    animation: slideUp 0.5s ease-out forwards;
+}
+
+.analytics-section:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.analytics-section:nth-child(3) {
+    animation-delay: 0.2s;
+} 
