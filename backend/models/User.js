@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   lastGame: {
-    gameStatus: { type: String, enum: ['win', 'loss', 'draw'] },
+    gameStatus: { type: String, enum: ['win', 'loss', 'draw', 'in_progress'] },
     score: {
       player: { type: Number, default: 0 },
       bot: { type: Number, default: 0 }

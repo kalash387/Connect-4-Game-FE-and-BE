@@ -373,17 +373,37 @@ const Game = () => {
 				return;
 			}
 
+			// Determine game status based on gameOver and winner
+			let gameStatus;
+			if (gameOver) {
+				if (winner === 1) {
+					gameStatus = 'won';
+				} else if (winner === 2) {
+					gameStatus = 'lost';
+				} else {
+					gameStatus = 'draw';
+				}
+			} else {
+				gameStatus = 'in_progress';
+			}
+
+			console.log('Game Status:', { gameOver, winner, gameStatus }); // Debug log
+
 			const gameData = {
-				gameStatus: gameOver ? (winner ? 'won' : 'draw') : 'in_progress',
+				gameStatus: gameStatus,
 				score: playerScore,
 				difficulty: difficulty,
 				moves: moveCount,
 				duration: 60 - timer,
 				playedAt: new Date().toISOString()
 			};
+
+			console.log('Saving game data:', gameData); // Debug log
+
 			const API_URL = 'https://connect-4-backend-3uji.onrender.com/api/auth';
 
-			await axios.post(`${API_URL}/update-game`, 
+			await axios.post(
+				`${API_URL}/update-game`, 
 				gameData,
 				{
 					headers: { 
@@ -393,7 +413,7 @@ const Game = () => {
 				}
 			);
 		} catch (error) {
-			console.error('Error saving game data:', error);
+			console.error('Error saving game data:', error.response?.data || error.message);
 		}
 	};
 
