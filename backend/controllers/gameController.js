@@ -31,6 +31,7 @@ const updateGame = async (req, res) => {
 // Get last game controller
 const getLastGame = async (req, res) => {
     try {
+        console.log(req);
         const userId = req.user.id;
         const user = await User.findById(userId);
         
