@@ -387,18 +387,16 @@ const Game = () => {
 				gameStatus = 'in_progress';
 			}
 
-			console.log('Game Status:', { gameOver, winner, gameStatus }); // Debug log
+			// console.log('Game Status:', { gameOver, winner, gameStatus }); // Debug log
 
-			const gameData = {
-				gameStatus: gameStatus,
-				score: playerScore,
-				difficulty: difficulty,
-				moves: moveCount,
-				duration: 60 - timer,
-				playedAt: new Date().toISOString()
-			};
-
-			console.log('Saving game data:', gameData); // Debug log
+			// const gameData = {
+			// 	gameStatus: gameStatus,
+			// 	score: playerScore,
+			// 	difficulty: difficulty,
+			// 	moves: moveCount,
+			// 	duration: 60 - timer,
+			// 	playedAt: new Date().toISOString()
+			// };
 
 			// const API_URL = 'https://connect-4-backend-3uji.onrender.com/api/auth';
 
