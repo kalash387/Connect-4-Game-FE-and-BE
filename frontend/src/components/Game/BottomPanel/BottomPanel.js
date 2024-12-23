@@ -47,4 +47,3 @@ const BottomPanel = ({ onTimerExpiry, gameOver, gameStarted, currentPlayer }) =>
 };
 
 export default BottomPanel;
-

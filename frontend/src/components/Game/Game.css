@@ -52,13 +52,15 @@ html, body, #root {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center; /* Center the content vertically */
     position: relative;
     z-index: 1;
-    padding: 5px;
+    padding: 15px 5px 25px; /* Add more padding at the bottom */
     overflow: hidden;
+    min-height: 0; /* Allow content to shrink */
 }
-    
+
+/* Update the board-container class */
 .board-container {
     position: relative;
     background: #1E1E30;
@@ -69,8 +71,7 @@ html, body, #root {
         0 5px 15px rgba(0, 0, 0, 0.3);
     max-width: 800px;
     width: 90%;
-    margin: auto;
-    overflow: hidden;
+    margin: 0 auto; /* Remove bottom margin */
 }
 
 /* Hexagonal frame effect */
