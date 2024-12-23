@@ -30,7 +30,7 @@ const DifficultySelector = ({ selectedDifficulty, onSelect, gameStarted }) => {
                         className={`difficulty-button ${selectedDifficulty === level ? 'active' : ''}`}
                         onClick={() => handleDifficultyChange(level)}
                     >
-                        {level.charAt(0).toUpperCase() + level.slice(1)}
+                        {level?.charAt(0)?.toUpperCase() + level?.slice(1)}
                     </button>
                 ))}
             </div>

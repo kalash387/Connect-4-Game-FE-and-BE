@@ -103,16 +103,16 @@ const TopPanel = ({
                 {lastGame && (
                     <div className="last-game-info">
                         <MenuItem disabled>
-                            Last Game: {new Date(lastGame.playedAt).toLocaleDateString()}
+                            Last Game: {new Date(lastGame?.playedAt).toLocaleDateString()}
                         </MenuItem>
                         <MenuItem disabled>
-                            Result: {lastGame.gameStatus.toUpperCase()} ({lastGame.score.player} - {lastGame.score.bot})
+                            Result: {lastGame?.gameStatus?.toUpperCase()} ({lastGame?.score?.player} - {lastGame?.score?.bot})
                         </MenuItem>
                         <MenuItem disabled>
-                            Difficulty: {lastGame.difficulty}
+                            Difficulty: {lastGame?.difficulty}
                         </MenuItem>
                         <MenuItem disabled>
-                            Duration: {lastGame.duration}s
+                            Duration: {lastGame?.duration}s
                         </MenuItem>
                         <Divider />
                     </div>
