@@ -400,18 +400,18 @@ const Game = () => {
 
 			console.log('Saving game data:', gameData); // Debug log
 
-			const API_URL = 'https://connect-4-backend-3uji.onrender.com/api/auth';
+			// const API_URL = 'https://connect-4-backend-3uji.onrender.com/api/auth';
 
-			await axios.post(
-				`${API_URL}/update-game`, 
-				gameData,
-				{
-					headers: { 
-						'Authorization': `Bearer ${token}`,
-						'Content-Type': 'application/json'
-					}
-				}
-			);
+			// await axios.post(
+			// 	`${API_URL}/update-game`, 
+			// 	gameData,
+			// 	{
+			// 		headers: { 
+			// 			'Authorization': `Bearer ${token}`,
+			// 			'Content-Type': 'application/json'
+			// 		}
+			// 	}
+			// );
 		} catch (error) {
 			console.error('Error saving game data:', error.response?.data || error.message);
 		}

@@ -16,33 +16,33 @@ const TopPanel = ({
     botScore 
 }) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const [lastGame, setLastGame] = React.useState(null);
+    // const [lastGame, setLastGame] = React.useState(null);
     const API_URL = 'https://connect-4-backend-3uji.onrender.com/api/auth';
 
-    const fetchLastGame = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                console.log('No token found');
-                return;
-            }
+    // const fetchLastGame = async () => {
+    //     try {
+    //         const token = localStorage.getItem('token');
+    //         if (!token) {
+    //             console.log('No token found');
+    //             return;
+    //         }
 
-            const response = await axios.get(`${API_URL}/last-game`, {
-                headers: { 
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            setLastGame(response.data.lastGame);
-        } catch (error) {
-            console.log('Error fetching last game:', error);
-            setLastGame(null);
-        }
-    };
+    //         const response = await axios.get(`${API_URL}/last-game`, {
+    //             headers: { 
+    //                 'Authorization': `Bearer ${token}`,
+    //                 'Content-Type': 'application/json'
+    //             }
+    //         });
+    //         setLastGame(response.data.lastGame);
+    //     } catch (error) {
+    //         console.log('Error fetching last game:', error);
+    //         setLastGame(null);
+    //     }
+    // };
 
-    useEffect(() => {
-        fetchLastGame();
-    }, []);
+    // useEffect(() => {
+    //     fetchLastGame();
+    // }, []);
 
     const handleClick = (event) => setAnchorEl(event.currentTarget);
     const handleClose = () => setAnchorEl(null);
@@ -100,7 +100,7 @@ const TopPanel = ({
                     horizontal: 'right',
                 }}
             >
-                {lastGame && (
+                {/* {lastGame && (
                     <div className="last-game-info">
                         <MenuItem disabled>
                             Last Game: {new Date(lastGame?.playedAt).toLocaleDateString()}
@@ -116,7 +116,7 @@ const TopPanel = ({
                         </MenuItem>
                         <Divider />
                     </div>
-                )}
+                )} */}
                 <MenuItem onClick={onLogout}>Logout</MenuItem>
             </Menu>
         </div>
