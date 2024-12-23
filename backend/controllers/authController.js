@@ -1,47 +1,78 @@
 // controllers/authController.js
-const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
 
-// Register new user
+// Register user controller
 const registerUser = async (req, res) => {
-  const { username, password } = req.body;
-  console.log("From server")
-  console.log(req.body)
-  try {
-    const userExists = await User.findOne({ username });
-    if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
+    try {
+        const { username, password } = req.body;
+
+        // Check if user already exists
+        const userExists = await User.findOne({ username });
+        if (userExists) {
+            return res.status(400).json({ message: 'Username already exists' });
+        }
+
+        // Create new user
+        const user = await User.create({
+            username,
+            password
+        });
+
+        // Generate token
+        const token = jwt.sign(
+            { id: user._id },
+            process.env.JWT_SECRET || 'test123',
+            { expiresIn: '30d' }
+        );
+
+        res.status(201).json({
+            _id: user._id,
+            username: user.username,
+            token
+        });
+    } catch (error) {
+        console.error('Register error:', error);
+        res.status(500).json({ message: 'Error registering user', error: error.message });
     }
-    console.log("New user")
-    const user = await User.create({ username, password });
-    console.log(user)
-
-    const token = jwt.sign({ id: user._id }, "test123", { expiresIn: '1h' });
-
-    res.status(201).json({ token });
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: error });
-  }
 };
 
-
+// Login user controller
 const loginUser = async (req, res) => {
-  const { username, password } = req.body;
-  try {
-    const user = await User.findOne({ username });
+    try {
+        const { username, password } = req.body;
 
-    if (!user || !(await user.matchPassword(password))) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+        // Find user
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid username or password' });
+        }
+
+        // Check password
+        const isMatch = await user.matchPassword(password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid username or password' });
+        }
+
+        // Generate token
+        const token = jwt.sign(
+            { id: user._id },
+            process.env.JWT_SECRET || 'your-secret-key',
+            { expiresIn: '30d' }
+        );
+
+        res.json({
+            _id: user._id,
+            username: user.username,
+            token
+        });
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ message: 'Error logging in', error: error.message });
     }
-
-    const token = jwt.sign({ id: user._id }, "test123", { expiresIn: '1h' });
-
-    res.json({ token });
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: 'Server error' });
-  }
 };
 
-module.exports = { registerUser, loginUser };
+module.exports = {
+    registerUser,
+    loginUser
+};

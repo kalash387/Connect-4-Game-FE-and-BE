@@ -18,6 +18,7 @@ const BottomPanel = ({ onTimerExpiry, gameOver, gameStarted, currentPlayer }) =>
 
                     clearInterval(intervalId);
                     onTimerExpiry();
+                    setTimer(60);
                     return 0;
                 });
             }, 1000);

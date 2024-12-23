@@ -3,7 +3,18 @@ const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  lastGame: {
+    gameStatus: { type: String, enum: ['win', 'loss', 'draw'] },
+    score: {
+      player: { type: Number, default: 0 },
+      bot: { type: Number, default: 0 }
+    },
+    difficulty: { type: String, enum: ['easy', 'medium', 'hard'] },
+    moves: { type: Number },
+    duration: { type: Number }, // in seconds
+    playedAt: { type: Date, default: Date.now }
+  }
 });
 
 userSchema.pre('save', async function(next) {

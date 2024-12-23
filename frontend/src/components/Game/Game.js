@@ -3,6 +3,7 @@ import TopPanel from './TopPanel/TopPanel';
 import BottomPanel from './BottomPanel/BottomPanel';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import confetti from 'canvas-confetti'; // First, run: npm install canvas-confetti
+import axios from 'axios';
 
 import { Typography, Box, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import './Game.css';
@@ -20,6 +21,10 @@ const Game = () => {
 	const [showInstructions, setShowInstructions] = useState(false);
 	const [winningCells, setWinningCells] = useState([]);
 	const [isShowingWinner, setIsShowingWinner] = useState(false);
+	const [playerScore, setPlayerScore] = useState(0);
+	const [botScore, setBotScore] = useState(0);
+	const [moveCount, setMoveCount] = useState(0);
+	const [timer, setTimer] = useState(60);
 	const navigate = useNavigate();
 
 
@@ -85,13 +90,20 @@ const Game = () => {
 		}, 250);
 	};
 
-	const handleColumnClick = (colIndex) => {
+	const checkDraw = (board) => {
+		// Check if all cells are filled (no zeros)
+		return board.every(row => row.every(cell => cell !== 0));
+	};
+
+	const handleColumnClick = async (colIndex) => {
 		if (gameOver) return;
 
+		// Start game on first valid move
 		if (!gameStarted) {
 			setGameStarted(true);
 		}
 
+		// Process the move
 		for (let row = 5; row >= 0; row--) {
 			if (board[row][colIndex] === 0) {
 				const newBoard = board.map((rowArr, rowIndex) =>
@@ -109,19 +121,31 @@ const Game = () => {
 					setWinner(currentPlayer);
 					setIsShowingWinner(true);
 
-					// Trigger celebration animation
+					if (currentPlayer === 1) {
+						setPlayerScore(prev => prev + 1);
+					} else {
+						setBotScore(prev => prev + 1);
+					}
+
+					await saveGameData();
 					triggerWinAnimation();
 
-					// Sequence for showing winner
 					setTimeout(() => {
 						setIsShowingWinner(false);
 						setDialogOpen(true);
 					}, 2500);
 
-					setGameStarted(false);
+				} else if (checkDraw(newBoard)) {
+					setGameOver(true);
+					setWinner(null);
+					await saveGameData();
+					setDialogOpen(true);
 				} else {
 					setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
 				}
+				
+				// Increment move count when a valid move is made
+				setMoveCount(prev => prev + 1);
 				break;
 			}
 		}
@@ -278,14 +302,20 @@ const Game = () => {
 		}
 	}, [currentPlayer]);
 
-	const handleRestart = () => {
+	const handleRestart = async () => {
+		if (gameOver) {
+			await saveGameData();
+		}
 		setBoard(Array(6).fill().map(() => Array(7).fill(0)));
 		setCurrentPlayer(1);
 		setGameOver(false);
 		setWinner(null);
 		setDialogOpen(false);
-		setGameStarted(false);
-		setWinningCells([]); // Reset winning cells
+		setIsShowingWinner(false);
+		setWinningCells([]);
+		setMoveCount(0);
+		setGameStarted(false);  // Reset gameStarted to allow difficulty changes
+		setTimer(60);  // Reset timer
 	};
 
 	const handleLogout = () => {
@@ -335,15 +365,48 @@ const Game = () => {
 		};
 	}, []);
 
+	const saveGameData = async () => {
+		const gameData = {
+			gameStatus: winner === 1 ? 'win' : winner === 2 ? 'loss' : 'draw',
+			score: {
+				player: playerScore,
+				bot: botScore
+			},
+			difficulty,
+			moves: moveCount,
+			duration: 60 - timer,
+			playedAt: new Date()
+		};
+
+		try {
+			const token = localStorage.getItem('token');
+			if (!token) {
+				console.error('No authentication token found');
+				return;
+			}
+
+			await axios.post('https://connect-4-backend-3uji.onrender.com/api/auth/update-game', 
+				gameData,
+				{
+					headers: { Authorization: `Bearer ${token}` }
+				}
+			);
+		} catch (error) {
+			console.error('Error saving game data:', error);
+		}
+	};
+
 	return (
 		<div className="game-container">
 			<TopPanel
 				profile="Player"
 				onLogout={handleLogout}
 				difficulty={difficulty}
-				gameStarted={gameStarted}
-				onSelectDifficulty={setDifficulty}
-				onShowInstructions={() => setShowInstructions(true)}
+					gameStarted={gameStarted}
+					onSelectDifficulty={setDifficulty}
+					onShowInstructions={() => setShowInstructions(true)}
+					playerScore={playerScore}
+					botScore={botScore}
 			/>
 
 			<div className="game-content">
