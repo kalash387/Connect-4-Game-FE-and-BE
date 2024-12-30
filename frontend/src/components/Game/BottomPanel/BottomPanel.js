@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './BottomPanel.css';
+import { FaReact } from 'react-icons/fa';
 
 const BottomPanel = ({ onTimerExpiry, gameOver, gameStarted, currentPlayer }) => {
     const [timer, setTimer] = useState(60);
@@ -38,7 +39,14 @@ const BottomPanel = ({ onTimerExpiry, gameOver, gameStarted, currentPlayer }) =>
             <div className="footer-mention">
                 <span className="made-by">
                     <span className="creator-name">
-                        Fueled by <span className="emoji">☕️</span>, powered by <span className="emoji">💻</span> — built by <a href="https://kalashdevfolio.netlify.app/" target="_blank" rel="noopener noreferrer" title="Visit Kalash's Portfolio">Kalash</a> <span className="emoji">🚀</span>
+                        Powered by React <FaReact className="react-icon" />, perfected by <a 
+                            href="https://kalashdevfolio.netlify.app/" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            title="Visit Kalash's Portfolio"
+                        >
+                            Kalash
+                        </a> <span className="emoji">✨</span>
                     </span>
                 </span>
             </div>

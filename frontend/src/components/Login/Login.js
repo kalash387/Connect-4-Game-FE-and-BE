@@ -21,8 +21,6 @@ const LoginPage = () => {
         setIsLoading(true); // Start loading
         try {
             await login(username, password); // Call the login service
-            // Simulate a minimum loading time for better UX
-            await new Promise(resolve => setTimeout(resolve, 1500));
             navigate('/game'); // Redirect to the game page after successful login
         } catch (err) {
             setError(err.message || 'Login failed'); // Display error message

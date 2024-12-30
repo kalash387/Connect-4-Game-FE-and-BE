@@ -1,124 +1,101 @@
-import React, { useEffect, useState } from 'react';
-import { IconButton, Menu, MenuItem, Typography, Box, Divider } from '@mui/material';
-import { FaUserCircle, FaQuestionCircle, FaTrophy } from 'react-icons/fa';
-import DifficultySelector from './DifficultyLevel/DifficultyLevel';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { createGame } from '../../../store/gameSlice';
+import { IconButton, Menu, MenuItem } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import PersonIcon from '@mui/icons-material/Person';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import DifficultyLevel from './DifficultyLevel/DifficultyLevel';
 import './TopPanel.css';
-import axios from 'axios';
 
 const TopPanel = ({ 
     profile, 
     onLogout, 
     difficulty, 
     onSelectDifficulty, 
-    gameStarted, 
     onShowInstructions,
     playerScore,
-    botScore 
+    botScore,
+    gameStarted 
 }) => {
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    // const [lastGame, setLastGame] = React.useState(null);
-    const API_URL = 'https://connect-4-backend-3uji.onrender.com/api/auth';
+    const dispatch = useDispatch();
+    const [anchorEl, setAnchorEl] = useState(null);
 
-    // const fetchLastGame = async () => {
-    //     try {
-    //         const token = localStorage.getItem('token');
-    //         if (!token) {
-    //             console.log('No token found');
-    //             return;
-    //         }
+    const handleProfileClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
 
-    //         const response = await axios.get(`${API_URL}/last-game`, {
-    //             headers: { 
-    //                 'Authorization': `Bearer ${token}`,
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         });
-    //         setLastGame(response.data.lastGame);
-    //     } catch (error) {
-    //         console.log('Error fetching last game:', error);
-    //         setLastGame(null);
-    //     }
-    // };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
-    // useEffect(() => {
-    //     fetchLastGame();
-    // }, []);
-
-    const handleClick = (event) => setAnchorEl(event.currentTarget);
-    const handleClose = () => setAnchorEl(null);
+    const handleLogout = () => {
+        handleClose();
+        onLogout();
+    };
 
     return (
         <div className="top-panel">
-            <div className="difficulty-controls">
-                <DifficultySelector 
-                    selectedDifficulty={difficulty} 
-                    onSelect={onSelectDifficulty} 
+            <div className="left-section">
+                <DifficultyLevel 
+                    selectedDifficulty={difficulty}
+                    onSelect={onSelectDifficulty}
                     gameStarted={gameStarted}
                 />
             </div>
-            
-            <div className="score-display">
-                <div className="score-item player-score">
-                    <FaUserCircle className="score-icon" />
-                    <div className="score-details">
-                        <span className="score-label">Player</span>
-                        <span className="score-value">{playerScore}</span>
+
+            <div className="center-section">
+                <div className="score-container">
+                    <div className="score-box player-score">
+                        <div className="score-icon">👤</div>
+                        <div className="score-details">
+                            <span className="score-label">YOU</span>
+                            <span className="score-value">{playerScore}</span>
+                        </div>
                     </div>
-                </div>
-                <div className="score-separator">vs</div>
-                <div className="score-item bot-score">
-                    <span className="robot-icon">🤖</span>
-                    <div className="score-details">
-                        <span className="score-label">Bot</span>
-                        <span className="score-value">{botScore}</span>
+                    <div className="score-separator">VS</div>
+                    <div className="score-box bot-score">
+                        <div className="score-icon">🤖</div>
+                        <div className="score-details">
+                            <span className="score-label">BOT</span>
+                            <span className="score-value">{botScore}</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div className="right-controls">
-                <div className="instructions-button" onClick={onShowInstructions}>
-                    <FaQuestionCircle className="instructions-icon" />
+            <div className="right-section">
+                <button 
+                    className="instructions-button"
+                    onClick={onShowInstructions}
+                >
+                    <HelpOutlineIcon className="instructions-icon" />
                     <span className="instructions-text">How to Play</span>
-                </div>
-                
-                <div className="profile" onClick={handleClick}>
-                    <FaUserCircle className="profile-icon" />
-                    <span className="profile-name">{profile}</span>
-                </div>
-            </div>
+                </button>
 
-            <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-            >
-                {/* {lastGame && (
-                    <div className="last-game-info">
-                        <MenuItem disabled>
-                            Last Game: {new Date(lastGame?.playedAt).toLocaleDateString()}
-                        </MenuItem>
-                        <MenuItem disabled>
-                            Result: {lastGame?.gameStatus?.toUpperCase()} ({lastGame?.score?.player} - {lastGame?.score?.bot})
-                        </MenuItem>
-                        <MenuItem disabled>
-                            Difficulty: {lastGame?.difficulty}
-                        </MenuItem>
-                        <MenuItem disabled>
-                            Duration: {lastGame?.duration}s
-                        </MenuItem>
-                        <Divider />
+                <div 
+                    className="profile-container"
+                    onClick={handleProfileClick}
+                >
+                    <div className="profile-info">
+                        <PersonIcon className="profile-icon" />
+                        <span className="profile-name">{profile}</span>
                     </div>
-                )} */}
-                <MenuItem onClick={onLogout}>Logout</MenuItem>
-            </Menu>
+                    <KeyboardArrowDownIcon className="profile-arrow" />
+                </div>
+                <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleClose}
+                    className="profile-menu"
+                >
+                    <MenuItem onClick={handleLogout} className="profile-menu-item">
+                        <LogoutIcon className="menu-icon" />
+                        <span>Logout</span>
+                    </MenuItem>
+                </Menu>
+            </div>
         </div>
     );
 };
