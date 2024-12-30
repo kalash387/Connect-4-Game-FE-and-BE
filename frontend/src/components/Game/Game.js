@@ -249,15 +249,74 @@ const Game = () => {
 
 		const hasWon = checkWin(updatedBoard, currentPlayer);
 		
-		if (gameMode === 'single') {
+		if (gameMode === 'multiplayer') {
+			const nextPlayer = currentPlayer === 1 ? 2 : 1;
+			
+			// Calculate new scores
+			let newPlayerScore = playerScore;
+			let newBotScore = botScore;
+			
+			if (hasWon) {
+				if ((isHost && currentPlayer === 1) || (!isHost && currentPlayer === 2)) {
+					newPlayerScore = playerScore + 1;
+					setPlayerScore(newPlayerScore);
+				} else {
+					newBotScore = botScore + 1;
+					setBotScore(newBotScore);
+				}
+			}
+
+			// Update Firebase with the new state
+			if (gameId) {
+				try {
+					await set(ref(database, `games/${gameId}`), {
+						board: updatedBoard,
+						currentPlayer: nextPlayer,
+						status: hasWon ? 'finished' : 'active',
+						winner: hasWon ? currentPlayer : null,
+						players: {
+							player1: 'host',
+							player2: 'guest'
+						},
+						scores: {
+							player1: isHost ? newPlayerScore : newBotScore,
+							player2: isHost ? newBotScore : newPlayerScore
+						}
+					});
+
+					if (hasWon) {
+						setGameOver(true);
+						setWinner(currentPlayer);
+						setTimeout(() => {
+							setDialogOpen(true);
+						}, 1000);
+						
+						if ((isHost && currentPlayer === 1) || (!isHost && currentPlayer === 2)) {
+							triggerWinAnimation();
+						}
+						return;
+					}
+				} catch (error) {
+					console.error('Error updating game state:', error);
+				}
+			}
+
+			setCurrentPlayer(nextPlayer);
+			setMoveCount(prev => prev + 1);
+		} else {
 			if (hasWon) {
 				setGameOver(true);
 				setWinner(currentPlayer);
-				// Add delay before showing dialog
+				// Update score for single player mode
+				if (currentPlayer === 1) {
+					setPlayerScore(prev => prev + 1);
+				} else {
+					setBotScore(prev => prev + 1);
+				}
 				triggerWinAnimation();
 				setTimeout(() => {
 					setDialogOpen(true);
-				}, 1000); // 1.5 second delay
+				}, 1000);
 				return;
 			}
 
@@ -274,26 +333,7 @@ const Game = () => {
 			// setTimeout(() => {
 			// 	botMove();
 			// }, 500);
-		} else if (gameMode === 'multiplayer') {
-			const nextPlayer = currentPlayer === 1 ? 2 : 1;
-			setCurrentPlayer(nextPlayer);
-			
-			// Only update Firebase if in multiplayer mode
-			if (gameId) {
-				await set(ref(database, `games/${gameId}`), {
-					board: updatedBoard,
-					currentPlayer: nextPlayer,
-					status: hasWon ? 'finished' : 'active',
-					winner: hasWon ? currentPlayer : null,
-					players: {
-						player1: 'host',
-						player2: 'guest'
-					}
-				});
-			}
 		}
-
-		setMoveCount(prev => prev + 1);
 	};
 
 	const getHighlightedCell = (colIndex) => {
@@ -343,10 +383,10 @@ const Game = () => {
 				if (hasWon) {
 					setGameOver(true);
 					setWinner(2);
-					// Add delay before showing dialog for bot wins too
+					setBotScore(prev => prev + 1); // Update bot score
 					setTimeout(() => {
 						setDialogOpen(true);
-					}, 1000); // 1.5 second delay
+					}, 1000);
 					return;
 				}
 
@@ -467,7 +507,7 @@ const Game = () => {
 			await saveGameData();
 		}
 		
-		// Reset all game states
+		// Reset game states but keep scores
 		setBoard(Array(6).fill().map(() => Array(7).fill(0)));
 		setCurrentPlayer(1);
 		setGameOver(false);
@@ -478,7 +518,7 @@ const Game = () => {
 		setMoveCount(0);
 		setTimer(60);
 		setGameStartTime(null);
-		setGameStarted(false); // Reset gameStarted to false for both modes
+		setGameStarted(false);
 	};
 
 	const handleLogout = () => {
@@ -603,6 +643,64 @@ const Game = () => {
 		}
 	};
 
+	// Add useEffect to handle score updates from Firebase in multiplayer
+	useEffect(() => {
+		if (gameId) {
+			const gameRef = ref(database, `games/${gameId}`);
+			
+			const unsubscribe = onValue(gameRef, (snapshot) => {
+				if (snapshot.exists()) {
+					const gameData = snapshot.val();
+					console.log('Received game data:', gameData); // Debug log
+
+					// Update board and current player
+					setBoard(gameData.board);
+					setCurrentPlayer(gameData.currentPlayer);
+
+					// Update scores based on host/guest status
+					if (gameData.scores) {
+						if (isHost) {
+							setPlayerScore(gameData.scores.player1);
+							setBotScore(gameData.scores.player2);
+						} else {
+							setPlayerScore(gameData.scores.player2);
+							setBotScore(gameData.scores.player1);
+						}
+					}
+
+					// Handle game over state
+					if (gameData.status === 'finished' && gameData.winner) {
+						setGameOver(true);
+						setWinner(gameData.winner);
+						setTimeout(() => {
+							setDialogOpen(true);
+						}, 1000);
+
+						const playerWon = (isHost && gameData.winner === 1) || (!isHost && gameData.winner === 2);
+						if (playerWon) {
+							triggerWinAnimation();
+						}
+					}
+				}
+			});
+
+			return () => unsubscribe();
+		}
+	}, [gameId, isHost]);
+
+	// Add this function to reset scores when changing game modes
+	const resetScores = () => {
+		setPlayerScore(0);
+		setBotScore(0);
+	};
+
+	// Update the useEffect that handles game mode changes
+	useEffect(() => {
+		if (gameMode) {
+			resetScores(); // Reset scores when changing game modes
+		}
+	}, [gameMode]);
+
 	return (
 		<div className="game-container">
 			{!gameMode ? (
@@ -692,6 +790,7 @@ const Game = () => {
 								onShowInstructions={() => setShowInstructions(true)}
 								playerScore={playerScore}
 								botScore={botScore}
+								gameMode={gameMode}
 							/>
 
 							<div className="game-content">

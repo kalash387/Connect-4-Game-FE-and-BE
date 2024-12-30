@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createGame } from '../../../store/gameSlice';
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -17,7 +17,8 @@ const TopPanel = ({
     onShowInstructions,
     playerScore,
     botScore,
-    gameStarted 
+    gameStarted,
+    gameMode
 }) => {
     const dispatch = useDispatch();
     const [anchorEl, setAnchorEl] = useState(null);
@@ -38,11 +39,13 @@ const TopPanel = ({
     return (
         <div className="top-panel">
             <div className="left-section">
-                <DifficultyLevel 
-                    selectedDifficulty={difficulty}
-                    onSelect={onSelectDifficulty}
-                    gameStarted={gameStarted}
-                />
+                {gameMode === 'single' && (
+                    <DifficultyLevel 
+                        selectedDifficulty={difficulty}
+                        onSelect={onSelectDifficulty}
+                        gameStarted={gameStarted}
+                    />
+                )}
             </div>
 
             <div className="center-section">
@@ -56,9 +59,9 @@ const TopPanel = ({
                     </div>
                     <div className="score-separator">VS</div>
                     <div className="score-box bot-score">
-                        <div className="score-icon">🤖</div>
+                        <div className="score-icon">{gameMode === 'multiplayer' ? '👥' : '🤖'}</div>
                         <div className="score-details">
-                            <span className="score-label">BOT</span>
+                            <span className="score-label">{gameMode === 'multiplayer' ? 'OPPONENT' : 'BOT'}</span>
                             <span className="score-value">{botScore}</span>
                         </div>
                     </div>
