@@ -55,7 +55,7 @@ const Register = () => {
                     </div>
                 )}
                 <div className="login-header">
-                    <h1>Card Swap Game</h1>
+                    <h1>Connect 4 Game</h1>
                     <p>Register to create an account</p>
                 </div>
                 <form className="login-form" onSubmit={handleRegister}>
