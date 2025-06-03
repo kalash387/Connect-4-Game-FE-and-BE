@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://hvxjh08ix2.execute-api.us-east-2.amazonaws.com/dev/analytics';
+const API_URL = 'https://process-analytics-solitary-glitter-85ea.kalashrami387.workers.dev/';
 
 export const getGameAnalytics = async (gameData) => {
     try {
